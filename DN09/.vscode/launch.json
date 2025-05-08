@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "testPreberi",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv izpisi"
+        },
+        {
+            "type": "java",
+            "name": "test2",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv najboljObremenjena 40"
+        },
+        {
+            "type": "java",
+            "name": "test2.1",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/test_min.csv najboljObremenjena 20"
+        },
+        {
+            "type": "java",
+            "name": "test2.2",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/test_overlap.csv najboljObremenjena 20"
+        }
+    ]
+}

@@ -1,0 +1,142 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Besedle",
+            "request": "launch",
+            "mainClass": "Besedle",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN01",
+            "request": "launch",
+            "mainClass": "DN01",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN02",
+            "request": "launch",
+            "mainClass": "DN02",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN03",
+            "request": "launch",
+            "mainClass": "DN03",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN04",
+            "request": "launch",
+            "mainClass": "DN04",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN05",
+            "request": "launch",
+            "mainClass": "DN05",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN06",
+            "request": "launch",
+            "mainClass": "DN06",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN07",
+            "request": "launch",
+            "mainClass": "DN07",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "DN08",
+            "request": "launch",
+            "mainClass": "DN08",
+            "projectName": "Java_8d8931f9",
+            "args": "kvadrat:5 pravokotnik:10:3 nkotnik:5:2"
+        },
+        {
+            "type": "java",
+            "name": "Kviz1",
+            "request": "launch",
+            "mainClass": "Kviz1",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "Kviz2",
+            "request": "launch",
+            "mainClass": "Kviz2",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "Kviz3",
+            "request": "launch",
+            "mainClass": "Kviz3",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "Zanke",
+            "request": "launch",
+            "mainClass": "Zanke",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "Znaki",
+            "request": "launch",
+            "mainClass": "Znaki",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "Kontrola",
+            "request": "launch",
+            "mainClass": "aplikacija.Kontrola",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "leGay",
+            "request": "launch",
+            "mainClass": "leGay",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "NakupovalniSeznam",
+            "request": "launch",
+            "mainClass": "nakupovanje.NakupovalniSeznam",
+            "projectName": "Java_8d8931f9"
+        },
+        {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "Java_8d8931f9"
+        }
+    ]
+}
