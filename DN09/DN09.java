@@ -346,11 +346,11 @@ public class DN09 {
             for (int j = 0; j < linije.length; j++) {
                 if (linije[j].getPostaje().contains(postaje[i])) {
                     List<Avtobus> avtobusi = linije[j].getAvtobusi();
-                    
+
                     for (Avtobus avtobus : avtobusi) {
                         stProstihMest += ((kapaciteta - avtobus.getSteviloPotnikov()) >= 0)
-                        ? kapaciteta - avtobus.getSteviloPotnikov()
-                        : 0;
+                                ? kapaciteta - avtobus.getSteviloPotnikov()
+                                : 0;
                     }
                 }
             }
@@ -363,13 +363,13 @@ public class DN09 {
             }
 
             double Razmerje = 0;
-            
+
             if (stCakajoci <= 0) {
                 Razmerje = stProstihMest;
-            }else{
+            } else {
                 Razmerje = stProstihMest / stCakajoci;
             }
-            
+
             if ((double) najPostaja.get("Razmerje") > Razmerje) {
                 najPostaja.put("Razmerje", Razmerje);
                 najPostaja.put("idP", postaje[i].getID());
@@ -385,7 +385,7 @@ public class DN09 {
                 }
             }
         }
-        
+
         System.out.println(String.format(
                 "Najbolj obremenjena postaja: %d %s",
                 (int) najPostaja.get("idP"),
@@ -399,6 +399,42 @@ public class DN09 {
 
     }
 
+    static void naslednjeStanje() {
+        for (int i = 0; i < linije.length; i++) {
+            Linija linija = linije[i];
+
+            List<Postaja> postaja = linija.getPostaje();
+            List<Avtobus> temp = new ArrayList<>();
+
+            for (int j = postaja.size()-1; j > 0; j--) {
+                String postajaIme = postaja.get(j).getIme();
+                for (Avtobus avtobus : linija.getAvtobusi()) {
+                    if (avtobus.getTrenutnaPostaja().getIme().equals(postajaIme)) {
+                        if (j + 1 < postaja.size()) {
+                            avtobus.setTrenutnaPostaja(postaja.get(j + 1));
+                        } else {
+                            temp.add(avtobus);
+                        }
+                    }
+                }
+            }
+
+            for (int j = 0; j < postaja.size(); j++) {
+                for (Avtobus avtobus : temp) {
+                    String postajaIme = postaja.get(j).getIme();
+                    if (avtobus.getTrenutnaPostaja().getIme().equals(postajaIme)) {
+                        if (j - 1 >= 0) {
+                            avtobus.setTrenutnaPostaja(postaja.get(j - 1));
+                        }
+                    }
+                }
+            }
+
+        }
+        izpisi();
+
+    }
+
     public static void main(String[] args) throws Exception {
         preberiInUredi(args[0]);
 
@@ -407,6 +443,9 @@ public class DN09 {
         }
         if (args[1].equals("najboljObremenjena")) {
             izpisNajboljObremenjenePostaje(Integer.parseInt(args[2]));
+        }
+        if (args[1].equals("premik")) {
+            naslednjeStanje();
         }
 
         // for (Postaja string : postaje) {

@@ -42,6 +42,14 @@
             "mainClass": "DN09",
             "projectName": "DN09_c92a8669",
             "args": "viri/test_overlap.csv najboljObremenjena 20"
+        },
+        {
+            "type": "java",
+            "name": "test3",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv premik"
         }
     ]
 }
