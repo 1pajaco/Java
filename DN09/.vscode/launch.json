@@ -49,7 +49,15 @@
             "request": "launch",
             "mainClass": "DN09",
             "projectName": "DN09_c92a8669",
-            "args": "viri/linije.csv premik"
+            "args": "viri/linije.csv premik 3"
+        },
+        {
+            "type": "java",
+            "name": "test4",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv ekspres 3"
         }
     ]
 }

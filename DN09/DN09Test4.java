@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 
-public class DN09Test3 {
+public class DN09Test4 {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
@@ -59,38 +59,41 @@ public class DN09Test3 {
 
         DN09.postaje = testPostaje;
         DN09.linije = testLinije;
+        DN09.avtobusi = new Avtobus[]{bus1, bus2, bus3};
     }
     @Test
-    public void naslednjeStanje() throws FileNotFoundException {
+    public void naslednjeStanjeEkspres() throws FileNotFoundException {
+        DN09.dodajEkspresneAvtobuse();
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        DN09.izpisiPoNPremikih(3);
-            assertEquals("Začetno stanje\n" +
-                    "Linija 1 - A -> B -> C (bus) -> D -> E\n" +
-                    "Linija 2 - F (bus) -> G\n" +
-                    "Linija 3 - H (bus)\n" +
-                    "\n" +
-                    "Stanje po 3 premikih\n" +
-                    "Linija 1 - A -> B -> C -> D (bus) -> E\n" +
-                    "Linija 2 - F -> G (bus)\n" +
-                    "Linija 3 - H (bus)".strip().replace("\r", ""), outContent.toString().strip().replace("\r", ""));
-            System.setOut(originalOut);
+        DN09.izpisiPoNPremikihEkspres(3);
+        assertEquals("Začetno stanje\n" +
+                "Linija 1 - A (ekspres) -> B -> C (bus) -> D -> E\n" +
+                "Linija 2 - F (ekspres) (bus) -> G\n" +
+                "Linija 3 - H (ekspres) (bus)\n" +
+                "\n" +
+                "Stanje po 3 premikih\n" +
+                "Linija 1 - A -> B -> C -> D (bus) -> E (ekspres)\n" +
+                "Linija 2 - F -> G (ekspres) (bus)\n" +
+                "Linija 3 - H (ekspres) (bus)".strip().replace("\r", ""), outContent.toString().strip().replace("\r", ""));
+        System.setOut(originalOut);
 
     }
     @Test
     public void naslednjeStanje2() throws FileNotFoundException {
+        DN09.dodajEkspresneAvtobuse();
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        DN09.izpisiPoNPremikih(2);
+        DN09.izpisiPoNPremikihEkspres(2);
         assertEquals("Začetno stanje\n" +
-                "Linija 1 - A -> B -> C (bus) -> D -> E\n" +
-                "Linija 2 - F (bus) -> G\n" +
-                "Linija 3 - H (bus)\n" +
+                "Linija 1 - A (ekspres) -> B -> C (bus) -> D -> E\n" +
+                "Linija 2 - F (ekspres) (bus) -> G\n" +
+                "Linija 3 - H (ekspres) (bus)\n" +
                 "\n" +
                 "Stanje po 2 premikih\n" +
-                "Linija 1 - A -> B -> C -> D -> E (bus)\n" +
-                "Linija 2 - F (bus) -> G\n" +
-                "Linija 3 - H (bus)".strip().replace("\r", ""), outContent.toString().strip().replace("\r", ""));
+                "Linija 1 - A (ekspres) -> B -> C -> D -> E (bus)\n" +
+                "Linija 2 - F (ekspres) (bus) -> G\n" +
+                "Linija 3 - H (ekspres) (bus)".strip().replace("\r", ""), outContent.toString().strip().replace("\r", ""));
         System.setOut(originalOut);
 
     }
