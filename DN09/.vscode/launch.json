@@ -58,6 +58,38 @@
             "mainClass": "DN09",
             "projectName": "DN09_c92a8669",
             "args": "viri/linije.csv ekspres 3"
+        },
+        {
+            "type": "java",
+            "name": "test5",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv prihodi 1 3"
+        },
+        {
+            "type": "java",
+            "name": "test6",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv stPrestopov 9 22"
+        },
+        {
+            "type": "java",
+            "name": "test7.1",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv najblizja 18"
+        },
+        {
+            "type": "java",
+            "name": "test7.2",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv najblizja Stepanjsko naselje"
         }
     ]
 }

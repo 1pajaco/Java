@@ -192,17 +192,17 @@ class Linija {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Linija ").append(getID()).append(" - ");
-    
+
         for (int i = 0; i < listPostaj.size(); i++) {
             if (listPostaj.isEmpty()) {
                 return "Na liniji ni postaj";
             }
-    
+
             String postaja = listPostaj.get(i).getIme();
             String oznaka = "";
             boolean ekspresNajden = false;
             boolean busNajden = false;
-    
+
             for (Avtobus avtobus : listAvtobus) {
                 if (avtobus.getTrenutnaPostaja().getIme().equals(postaja)) {
                     if (avtobus instanceof EkspresniAvtobus) {
@@ -219,9 +219,9 @@ class Linija {
                 oznaka += " (bus)";
             }
             postaja += oznaka;
-    
+
             sb.append(postaja);
-    
+
             if (i < listPostaj.size() - 1) {
                 sb.append(" -> ");
             }
@@ -516,10 +516,10 @@ public class DN09 {
 
             for (Avtobus avtobus : avtobusiNaLiniji) {
                 if (avtobus instanceof EkspresniAvtobus) {
-                    if(avtobus.isSmerNaprej()){
+                    if (avtobus.isSmerNaprej()) {
                         avtobus.setTrenutnaPostaja(linija.getPostaje().get(linija.getPostaje().size() - 1));
                         avtobus.setSmerNaprej(false);
-                    }else{
+                    } else {
                         avtobus.setTrenutnaPostaja(linija.getPostaje().get(0));
                         avtobus.setSmerNaprej(true);
                     }
@@ -528,7 +528,7 @@ public class DN09 {
         }
     }
 
-    static void izpisiPoNPremikihEkspres(int n){
+    static void izpisiPoNPremikihEkspres(int n) {
         System.out.println("Zacetno stanje");
         izpisi();
         System.out.println();
@@ -540,6 +540,141 @@ public class DN09 {
 
         System.out.println("Stanje po " + n + " premikih");
         izpisi();
+    }
+
+    static void casiPrihodov(int IDpostaje, int maxRazdalja) {
+        Postaja postaja = postaje[IDpostaje - 1];
+        System.out.println("Postaja " + postaja.getIme() + ":");
+
+        for (Linija linija : linije) {
+            int indexPostaje = linija.getPostaje().indexOf(postaja);
+            if (indexPostaje != -1) {
+                for (Avtobus avtobus : linija.getAvtobusi()) {
+                    int indexAvtobusa = linija.getPostaje().indexOf(avtobus.getTrenutnaPostaja());
+                    int Razdalja = Math.abs(indexAvtobusa - indexPostaje);
+
+                    if (maxRazdalja >= Razdalja) {
+                        System.out.println(
+                                "Linija " + linija.getID() + " Avtobus " + avtobus.getID() + " -  " + Razdalja);
+                    }
+                }
+            }
+        }
+    }
+
+    static void steviloPrestopov(int zacetekID, int konecID) {
+        Postaja zacetekPostaja = null, koncnPostaja = null;
+
+        for (Postaja postaja : postaje) {
+            if (postaja.getID() == zacetekID) {
+                zacetekPostaja = postaja;
+            }
+            if (postaja.getID() == konecID) {
+                koncnPostaja = postaja;
+            }
+        }
+
+        for (Linija linija : linije) {
+            if (linija.getPostaje().contains(koncnPostaja) && linija.getPostaje().contains(zacetekPostaja)) {
+                System.out.println(
+                        "Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme() + " prestop ni potreben");
+                return;
+            }
+        }
+
+        Queue<PostajaInfo> queue = new LinkedList<>();
+        Map<Postaja, Integer> minPrestopi = new HashMap<>();
+
+        queue.add(new PostajaInfo(zacetekPostaja, 0));
+        minPrestopi.put(zacetekPostaja, 0);
+
+        while (!queue.isEmpty()) {
+            PostajaInfo trenutnaInfo = queue.poll();
+            Postaja trenutnaPostaja = trenutnaInfo.postaja;
+            int prestopi = trenutnaInfo.prestopi;
+
+            if (trenutnaPostaja == koncnPostaja) {
+                System.out.println("Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme()
+                        + " je potrebno prestopiti " + (prestopi - 1) + "-krat");
+                return;
+            }
+
+            for (Linija linija : linije) {
+                if (linija.getPostaje().contains(trenutnaPostaja)) {
+                    for (Postaja sosednjaPostaja : linija.getPostaje()) {
+                        int noviPrestopi = prestopi + 1;
+                        if (!minPrestopi.containsKey(sosednjaPostaja)
+                                || noviPrestopi < minPrestopi.get(sosednjaPostaja)) {
+                            minPrestopi.put(sosednjaPostaja, noviPrestopi);
+                            queue.add(new PostajaInfo(sosednjaPostaja, noviPrestopi));
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme() + " pot ni mozna");
+
+    }
+
+    static class PostajaInfo {
+        Postaja postaja;
+        int prestopi;
+
+        public PostajaInfo(Postaja postaja, int prestopi) {
+            this.postaja = postaja;
+            this.prestopi = prestopi;
+        }
+    }
+
+    static boolean[] postajaObstaja(String Indentifierpostaja){
+        boolean postajaObstaja[] = {false, false};
+
+        try {
+            int idPostaje = Integer.parseInt(Indentifierpostaja.trim());
+            for (Postaja postaja : postaje) {
+                if (postaja.getID() == idPostaje) {
+                    postajaObstaja[0] = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            for (Postaja postaja : postaje) {
+                if (postaja.getIme().equals(Indentifierpostaja.trim())) {
+                    postajaObstaja[0] = true;
+                    postajaObstaja[1] = true;
+                    break;
+                }
+            }
+        }
+        return postajaObstaja;
+    }
+
+    static void izpisNajblizjePostaje(String imePostaje) {
+        boolean[] obstajaPostaja = postajaObstaja(imePostaje);
+
+        if(!obstajaPostaja[0]){
+            System.out.println("Postaja z imenom " + imePostaje + "ne obstaja");
+            return;
+        }
+        
+        Postaja zacetnPostaja = null;
+
+        if(obstajaPostaja[1]){
+            for (Postaja postaja : postaje) {
+                if(postaja.getIme().equals(imePostaje.trim())){
+                    zacetnPostaja = postaja;
+                }
+            }
+        }else{
+            for(Postaja postaja : postaje){
+                if(postaja.getID() == Integer.parseInt(imePostaje.trim())){
+                    zacetnPostaja = postaja;
+                }
+            }
+        }
+
+        System.out.println(zacetnPostaja);
     }
 
     public static void main(String[] args) throws Exception {
@@ -558,14 +693,19 @@ public class DN09 {
             dodajEkspresneAvtobuse();
             izpisiPoNPremikihEkspres(Integer.parseInt(args[2]));
         }
+        if (args[1].equals("prihodi")) {
+            casiPrihodov(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+        }
+        if (args[1].equals("stPrestopov")) {
+            steviloPrestopov(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+        }
+        if (args[1].equals("najblizja")) {
+            String imePostaje = "";
+            for (int i = 2; i < args.length; i++) {
+                imePostaje += args[i] + " ";
+            }
+            izpisNajblizjePostaje(imePostaje);
 
-        // for (Postaja string : postaje) {
-        // System.out.println(string);
-        // }
-
-        // for (Avtobus string : avtobusi) {
-        // System.out.println(string.getTrenutnaPostaja());
-        // }
-
+        }
     }
 }
