@@ -90,6 +90,14 @@
             "mainClass": "DN09",
             "projectName": "DN09_c92a8669",
             "args": "viri/linije.csv najblizja Stepanjsko naselje"
+        },
+        {
+            "type": "java",
+            "name": "test7.3",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_c92a8669",
+            "args": "viri/linije.csv najblizja 4"
         }
     ]
 }
