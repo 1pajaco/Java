@@ -16,7 +16,7 @@
             "name": "testPreberi",
             "request": "launch",
             "mainClass": "DN09",
-            "projectName": "DN09_c92a8669",
+            "projectName": "DN09",
             "args": "viri/linije.csv izpisi"
         },
         {
@@ -72,7 +72,7 @@
             "name": "test6",
             "request": "launch",
             "mainClass": "DN09",
-            "projectName": "DN09_c92a8669",
+            "projectName": "DN09_86dc913f",
             "args": "viri/linije.csv stPrestopov 9 22"
         },
         {
@@ -88,7 +88,7 @@
             "name": "test7.2",
             "request": "launch",
             "mainClass": "DN09",
-            "projectName": "DN09_c92a8669",
+            "projectName": "DN09_86dc913f",
             "args": "viri/linije.csv najblizja Stepanjsko naselje"
         },
         {
@@ -96,8 +96,24 @@
             "name": "test7.3",
             "request": "launch",
             "mainClass": "DN09",
-            "projectName": "DN09_c92a8669",
-            "args": "viri/linije.csv najblizja 4"
+            "projectName": "DN09_86dc913f",
+            "args": "viri/linije.csv najblizja 4 3"
+        },
+        {
+            "type": "java",
+            "name": "test7.4",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_86dc913f",
+            "args": "viri/linije.csv najblizja 13 25"
+        },
+        {
+            "type": "java",
+            "name": "test8",
+            "request": "launch",
+            "mainClass": "DN09",
+            "projectName": "DN09_86dc913f",
+            "args": "viri/linije.csv izrisi postaje.png"
         }
     ]
 }

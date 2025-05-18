@@ -1,741 +1,873 @@
-    import java.util.*;
-    import java.io.*;
+import java.util.*;
+import java.io.*;
+import java.awt.Color;
 
-    class Postaja {
-        private int ID;
-        private String ime;
-        private int x;
-        private int y;
-        private int cakajoci;
+class Postaja {
+    private int ID;
+    private String ime;
+    private int x;
+    private int y;
+    private int cakajoci;
 
-        public Postaja(int iD, String ime, int x, int y, int cakajoci) {
-            ID = iD;
-            this.ime = ime;
-            this.x = x;
-            this.y = y;
-            this.cakajoci = cakajoci;
-        }
-
-        public int getID() {
-            return ID;
-        }
-
-        public void setID(int iD) {
-            ID = iD;
-        }
-
-        public String getIme() {
-            return ime;
-        }
-
-        public void setIme(String ime) {
-            this.ime = ime;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-
-        public int getCakajoci() {
-            return cakajoci;
-        }
-
-        public void setCakajoci(int cakajoci) {
-            this.cakajoci = cakajoci;
-        }
-
-        public String toString() {
-            return getID() + " " + getIme() + " [" + getX() + "," + getY() + "] čakajoči: " + getCakajoci();
-        }
+    public Postaja(int iD, String ime, int x, int y, int cakajoci) {
+        ID = iD;
+        this.ime = ime;
+        this.x = x;
+        this.y = y;
+        this.cakajoci = cakajoci;
     }
 
-    class Avtobus {
-        private int ID;
-        private int steviloPotnikov;
-        protected Postaja postaja;
-        private boolean smerNaprej;
-
-        Avtobus(int iD, int steviloPotnikov) {
-            this.ID = iD;
-            this.steviloPotnikov = steviloPotnikov;
-            this.smerNaprej = true;
-        }
-
-        public int getID() {
-            return ID;
-        }
-
-        public void setID(int iD) {
-            ID = iD;
-        }
-
-        public int getSteviloPotnikov() {
-            return steviloPotnikov;
-        }
-
-        public void setSteviloPotnikov(int SteviloPotnikov) {
-            steviloPotnikov = SteviloPotnikov;
-        }
-
-        public void setTrenutnaPostaja(Postaja Tpostaja) {
-            postaja = Tpostaja;
-        }
-
-        public Postaja getTrenutnaPostaja() {
-            return postaja;
-        }
-
-        public void setSmerNaprej(boolean smerNaprej) {
-            this.smerNaprej = smerNaprej;
-        }
-
-        public boolean isSmerNaprej() {
-            return smerNaprej;
-        }
-
-        public String toString() {
-            return getID() + " (" + getSteviloPotnikov() + ") - "
-                    + (postaja != null ? postaja.getIme() : "Neznana postaja");
-        }
+    public int getID() {
+        return ID;
     }
 
-    class EkspresniAvtobus extends Avtobus {
-        Postaja[] preskociPostaje;
-
-        public EkspresniAvtobus(int iD, int steviloPotnikov, Postaja[] preskociPostaje, boolean smerNaprej) {
-            super(iD, steviloPotnikov);
-            this.preskociPostaje = preskociPostaje;
-        }
-
-        public Postaja[] getPreskociPostaje() {
-            return preskociPostaje;
-        }
-
-        public void setPreskociPostaje(Postaja[] preskociPostaje) {
-            this.preskociPostaje = preskociPostaje;
-        }
-
-        public String toString() {
-            return getID() + " (" + getSteviloPotnikov() + ") - "
-                    + (postaja != null ? postaja.getIme() : "Neznana postaja");
-        }
+    public void setID(int iD) {
+        ID = iD;
     }
 
-    class Linija {
-        private int ID;
-        private String barvaLinije;
-
-        private List<Postaja> listPostaj = new ArrayList<>();
-        protected int maxPostaj = 10;
-
-        private List<Avtobus> listAvtobus = new ArrayList<>();
-        protected int maxAvtobusov = 5;
-
-        Linija(int ID) {
-            this.ID = ID;
-        }
-
-        public boolean dodajPostajo(Postaja postaja) {
-            if (listPostaj.size() >= maxPostaj) {
-                return false;
-            }
-
-            listPostaj.add(postaja);
-            return true;
-        }
-
-        public boolean dodajAvtobus(Avtobus avtobus) {
-            if (listAvtobus.size() >= maxAvtobusov) {
-                return false;
-            }
-
-            listAvtobus.add(avtobus);
-            return true;
-        }
-
-        public int getID() {
-            return ID;
-        }
-
-        public void setID(int iD) {
-            ID = iD;
-        }
-
-        public String getBarva() {
-            return barvaLinije;
-        }
-
-        public void setBarva(String barvaLinije) {
-            this.barvaLinije = barvaLinije;
-        }
-
-        public List<Postaja> getPostaje() {
-            return listPostaj;
-        }
-
-        public List<Avtobus> getAvtobusi() {
-            return listAvtobus;
-        }
-
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Linija ").append(getID()).append(" - ");
-
-            for (int i = 0; i < listPostaj.size(); i++) {
-                if (listPostaj.isEmpty()) {
-                    return "Na liniji ni postaj";
-                }
-
-                String postaja = listPostaj.get(i).getIme();
-                String oznaka = "";
-                boolean ekspresNajden = false;
-                boolean busNajden = false;
-
-                for (Avtobus avtobus : listAvtobus) {
-                    if (avtobus.getTrenutnaPostaja().getIme().equals(postaja)) {
-                        if (avtobus instanceof EkspresniAvtobus) {
-                            ekspresNajden = true;
-                        } else {
-                            busNajden = true;
-                        }
-                    }
-                }
-                if (ekspresNajden) {
-                    oznaka += " (ekspres)";
-                }
-                if (busNajden) {
-                    oznaka += " (bus)";
-                }
-                postaja += oznaka;
-
-                sb.append(postaja);
-
-                if (i < listPostaj.size() - 1) {
-                    sb.append(" -> ");
-                }
-            }
-            return sb.toString();
-        }
+    public String getIme() {
+        return ime;
     }
 
-    public class DN09 {
-        static Postaja[] postaje;
+    public void setIme(String ime) {
+        this.ime = ime;
+    }
 
-        static Avtobus[] avtobusi;
-        static int stAvtobusov = 0;
+    public int getX() {
+        return x;
+    }
 
-        static Linija[] linije;
-        static int stLinij = 0;
+    public void setX(int x) {
+        this.x = x;
+    }
 
-        static void preberiInUredi(String datoteka) throws Exception {
-            Scanner sc = new Scanner(new File(datoteka));
+    public int getY() {
+        return y;
+    }
 
-            String[] parametri = sc.nextLine().split(",");
-            int stPostaj = Integer.parseInt(parametri[0]);
-            int stLinij = Integer.parseInt(parametri[1]);
-            int stAvtobusov = Integer.parseInt(parametri[2]);
+    public void setY(int y) {
+        this.y = y;
+    }
 
-            postaje = new Postaja[stPostaj];
-            avtobusi = new Avtobus[stAvtobusov];
-            linije = new Linija[stLinij];
+    public int getCakajoci() {
+        return cakajoci;
+    }
 
-            sc.nextLine();
+    public void setCakajoci(int cakajoci) {
+        this.cakajoci = cakajoci;
+    }
 
-            String[] postajeT = new String[stPostaj];
-            String[] linijeT = new String[stLinij];
+    public String toString() {
+        return getID() + " " + getIme() + " [" + getX() + "," + getY() + "] čakajoči: " + getCakajoci();
+    }
+}
 
-            for (int i = 0; i < stPostaj; i++) {
-                postajeT[i] = sc.nextLine();
-            }
+class Avtobus {
+    private int ID;
+    private int steviloPotnikov;
+    protected Postaja postaja;
+    private boolean smerNaprej;
 
-            sc.nextLine();
+    Avtobus(int iD, int steviloPotnikov) {
+        this.ID = iD;
+        this.steviloPotnikov = steviloPotnikov;
+        this.smerNaprej = true;
+    }
 
-            for (int i = 0; i < stLinij; i++) {
-                linijeT[i] = sc.nextLine();
-            }
-            sc.close();
+    public int getID() {
+        return ID;
+    }
 
-            populatePostaje(postajeT);
-            populateLinije(linijeT);
-        }
+    public void setID(int iD) {
+        ID = iD;
+    }
 
-        static void populatePostaje(String[] p) {
-            for (int i = 0; i < p.length; i++) {
-                String[] postaja = p[i].split(",");
+    public int getSteviloPotnikov() {
+        return steviloPotnikov;
+    }
 
-                int id = Integer.parseInt(postaja[0]);
-                String ime = postaja[1];
-                int x = Integer.parseInt(postaja[2]);
-                int y = Integer.parseInt(postaja[3]);
-                int cakajoci = Integer.parseInt(postaja[6]);
+    public void setSteviloPotnikov(int SteviloPotnikov) {
+        steviloPotnikov = SteviloPotnikov;
+    }
 
-                postaje[i] = new Postaja(id, ime, x, y, cakajoci);
+    public void setTrenutnaPostaja(Postaja Tpostaja) {
+        postaja = Tpostaja;
+    }
 
-                if (!postaja[5].isBlank()) {
-                    String[] avtobusIdStPotnikov = postaja[5].split(";");
+    public Postaja getTrenutnaPostaja() {
+        return postaja;
+    }
 
-                    for (int j = 0; j < avtobusIdStPotnikov.length; j++) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(avtobusIdStPotnikov[j]);
-                        sb.replace(avtobusIdStPotnikov[j].indexOf("("), avtobusIdStPotnikov[j].indexOf("(") + 1, ",");
-                        sb.replace(avtobusIdStPotnikov[j].indexOf(")"), avtobusIdStPotnikov[j].indexOf(")") + 1, "");
-                        String[] avtobus = sb.toString().split(",");
+    public void setSmerNaprej(boolean smerNaprej) {
+        this.smerNaprej = smerNaprej;
+    }
 
-                        int idA = Integer.parseInt(avtobus[0]);
-                        int stPotnikov = Integer.parseInt(avtobus[1]);
+    public boolean isSmerNaprej() {
+        return smerNaprej;
+    }
 
-                        if (!obstajaAvtobus(idA)) {
-                            avtobusi[stAvtobusov] = new Avtobus(idA, stPotnikov);
-                            avtobusi[stAvtobusov].setTrenutnaPostaja(postaje[i]);
-                            stAvtobusov++;
-                        }
-                    }
-                }
+    public String toString() {
+        return getID() + " (" + getSteviloPotnikov() + ") - "
+                + (postaja != null ? postaja.getIme() : "Neznana postaja");
+    }
+}
 
-                String[] idLinije = postaja[4].split(";");
-                for (String idL : idLinije) {
-                    int idLint = Integer.parseInt(idL);
-                    if (!obstajaLinija(idLint)) {
-                        linije[stLinij] = new Linija(idLint);
-                        stLinij++;
-                    }
-                }
-            }
-        }
+class EkspresniAvtobus extends Avtobus {
+    Postaja[] preskociPostaje;
 
-        static void populateLinije(String[] lin) {
-            for (int i = 0; i < lin.length; i++) {
-                String[] linija = lin[i].split(",");
-                int id = 0;
+    public EkspresniAvtobus(int iD, int steviloPotnikov, Postaja[] preskociPostaje, boolean smerNaprej) {
+        super(iD, steviloPotnikov);
+        this.preskociPostaje = preskociPostaje;
+    }
 
-                for (int j = 0; j < stLinij; j++) {
-                    if (linije[j].getID() == Integer.parseInt(linija[0])) {
-                        id = j;
-                    }
-                }
+    public Postaja[] getPreskociPostaje() {
+        return preskociPostaje;
+    }
 
-                String barva = linija[1];
-                String idAvtobusov = linija[2];
-                String idPostaj = linija[3];
+    public void setPreskociPostaje(Postaja[] preskociPostaje) {
+        this.preskociPostaje = preskociPostaje;
+    }
 
-                linije[id].setBarva(barva);
+    public String toString() {
+        return getID() + " (" + getSteviloPotnikov() + ") - "
+                + (postaja != null ? postaja.getIme() : "Neznana postaja");
+    }
+}
 
-                String[] idAvtobusa = idAvtobusov.split(";");
-                for (String idA : idAvtobusa) {
-                    for (int j = 0; j < stAvtobusov; j++) {
-                        if (Integer.parseInt(idA) == avtobusi[j].getID()) {
-                            linije[id].dodajAvtobus(avtobusi[j]);
-                        }
-                    }
-                }
+class Linija {
+    private int ID;
+    private String barvaLinije;
 
-                String[] idPostaje = idPostaj.split("\\|");
-                for (String idP : idPostaje) {
-                    for (int j = 0; j < postaje.length; j++) {
-                        if (Integer.parseInt(idP) == postaje[j].getID()) {
-                            linije[id].dodajPostajo(postaje[j]);
-                        }
-                    }
-                }
+    private List<Postaja> listPostaj = new ArrayList<>();
+    protected int maxPostaj = 10;
 
-            }
-        }
+    private List<Avtobus> listAvtobus = new ArrayList<>();
+    protected int maxAvtobusov = 5;
 
-        static boolean obstajaAvtobus(int id) {
-            for (int i = 0; i < stAvtobusov; i++) {
-                if (avtobusi[i].getID() == id) {
-                    return true;
-                }
-            }
+    Linija(int ID) {
+        this.ID = ID;
+    }
+
+    public boolean dodajPostajo(Postaja postaja) {
+        if (listPostaj.size() >= maxPostaj) {
             return false;
         }
 
-        static boolean obstajaLinija(int id) {
-            for (int i = 0; i < stLinij; i++) {
-                if (linije[i].getID() == id) {
-                    return true;
-                }
-            }
+        listPostaj.add(postaja);
+        return true;
+    }
+
+    public boolean dodajAvtobus(Avtobus avtobus) {
+        if (listAvtobus.size() >= maxAvtobusov) {
             return false;
         }
 
-        static void izpisi() {
-            for (Linija string : linije) {
-                System.out.println(string);
-            }
-        }
+        listAvtobus.add(avtobus);
+        return true;
+    }
 
-        static void izpisNajboljObremenjenePostaje(int kapaciteta) {
-            if (kapaciteta <= 0) {
-                System.out.println("Kapaciteta je manjsa ali enaka 0");
-                return;
-            }
+    public int getID() {
+        return ID;
+    }
 
-            Map<String, Object> najPostaja = new HashMap<>();
+    public void setID(int iD) {
+        ID = iD;
+    }
 
-            for (int i = 0; i < postaje.length; i++) {
-                double stCakajoci = postaje[i].getCakajoci();
-                double stProstihMest = 0;
+    public String getBarva() {
+        return barvaLinije;
+    }
 
-                for (int j = 0; j < linije.length; j++) {
-                    if (linije[j].getPostaje().contains(postaje[i])) {
-                        List<Avtobus> avtobusi = linije[j].getAvtobusi();
+    public void setBarva(String barvaLinije) {
+        this.barvaLinije = barvaLinije;
+    }
 
-                        for (Avtobus avtobus : avtobusi) {
-                            stProstihMest += ((kapaciteta - avtobus.getSteviloPotnikov()) >= 0)
-                                    ? kapaciteta - avtobus.getSteviloPotnikov()
-                                    : 0;
-                        }
-                    }
-                }
+    public List<Postaja> getPostaje() {
+        return listPostaj;
+    }
 
-                if (!najPostaja.containsKey("Razmerje")) {
-                    najPostaja.put("Razmerje", stProstihMest);
-                    najPostaja.put("idP", postaje[i].getID());
-                    najPostaja.put("imePostaje", postaje[i].getIme());
-                    najPostaja.put("stProstihMest", stProstihMest);
-                    najPostaja.put("stCakajocih", stCakajoci);
-                }
+    public List<Avtobus> getAvtobusi() {
+        return listAvtobus;
+    }
 
-                double Razmerje = 0;
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Linija ").append(getID()).append(" - ");
 
-                if (stCakajoci <= 0) {
-                    Razmerje = stProstihMest;
-                } else {
-                    Razmerje = stProstihMest / stCakajoci;
-                }
-
-                if ((double) najPostaja.get("Razmerje") > Razmerje) {
-                    najPostaja.put("Razmerje", Razmerje);
-                    najPostaja.put("idP", postaje[i].getID());
-                    najPostaja.put("imePostaje", postaje[i].getIme());
-                    najPostaja.put("stProstihMest", stProstihMest);
-                    najPostaja.put("stCakajocih", stCakajoci);
-                } else if ((double) najPostaja.get("Razmerje") == Razmerje) {
-                    if ((int) najPostaja.get("idP") > postaje[i].getID()) {
-                        najPostaja.put("idP", postaje[i].getID());
-                        najPostaja.put("imePostaje", postaje[i].getIme());
-                        najPostaja.put("stProstihMest", stProstihMest);
-                        najPostaja.put("stCakajocih", stCakajoci);
-                    }
-                }
+        for (int i = 0; i < listPostaj.size(); i++) {
+            if (listPostaj.isEmpty()) {
+                return "Na liniji ni postaj";
             }
 
-            System.out.println(String.format(
-                    "Najbolj obremenjena postaja: %d %s",
-                    (int) najPostaja.get("idP"),
-                    najPostaja.get("imePostaje")));
+            String postaja = listPostaj.get(i).getIme();
+            String oznaka = "";
+            boolean ekspresNajden = false;
+            boolean busNajden = false;
 
-            System.out.println(String.format(
-                    "Cakajoci: %d, Stevilo prostih mest: %d, Razmerje: %.2f",
-                    ((Number) najPostaja.get("stCakajocih")).intValue(),
-                    ((Number) najPostaja.get("stProstihMest")).intValue(),
-                    ((Number) najPostaja.get("Razmerje")).doubleValue()));
-
-        }
-
-        static void naslednjeStanje() {
-            for (int i = 0; i < linije.length; i++) {
-                Linija linija = linije[i];
-                List<Postaja> postaja = linija.getPostaje();
-                List<Avtobus> avtobusiNaLiniji = linija.getAvtobusi();
-
-                for (Avtobus avtobus : avtobusiNaLiniji) {
-                    Postaja trenutnaPostaja = avtobus.getTrenutnaPostaja();
-                    int trenutniIndeks = postaja.indexOf(trenutnaPostaja);
-
-                    if (trenutniIndeks != -1 && !(avtobus instanceof EkspresniAvtobus)) {
-                        if (avtobus.isSmerNaprej()) {
-                            if (trenutniIndeks < postaja.size() - 1) {
-                                avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks + 1));
-                            } else {
-                                avtobus.setSmerNaprej(false);
-                                if (postaja.size() > 1) {
-                                    avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks - 1));
-                                }
-                            }
-                        } else {
-                            if (trenutniIndeks > 0) {
-                                avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks - 1));
-                            } else {
-                                avtobus.setSmerNaprej(true);
-                                if (postaja.size() > 1) {
-                                    avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks + 1));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        static void izpisiPoNPremikih(int n) {
-            System.out.println("Zacetno stanje");
-            izpisi();
-            System.out.println();
-
-            for (int i = 0; i < n; i++) {
-                naslednjeStanje();
-            }
-
-            System.out.println("Stanje po " + n + " premikih");
-            izpisi();
-        }
-
-        static void dodajEkspresneAvtobuse() {
-            Random rnd = new Random();
-
-            for (Linija linija : linije) {
-                Postaja[] preskociPostajo = new Postaja[Math.max(0, linija.getPostaje().size() - 2)];
-                for (int i = 1; i < linija.getPostaje().size() - 1; i++) {
-                    preskociPostajo[i - 1] = linija.getPostaje().get(i);
-                }
-
-                EkspresniAvtobus novAvtobusExpr = new EkspresniAvtobus(rnd.nextInt(), rnd.nextInt(), preskociPostajo, true);
-                novAvtobusExpr.setTrenutnaPostaja(linija.getPostaje().get(0));
-                linija.dodajAvtobus(novAvtobusExpr);
-            }
-        }
-
-        static void naslednjeStanjeEkspres() {
-            for (int i = 0; i < linije.length; i++) {
-                Linija linija = linije[i];
-                List<Avtobus> avtobusiNaLiniji = linija.getAvtobusi();
-
-                for (Avtobus avtobus : avtobusiNaLiniji) {
+            for (Avtobus avtobus : listAvtobus) {
+                if (avtobus.getTrenutnaPostaja().getIme().equals(postaja)) {
                     if (avtobus instanceof EkspresniAvtobus) {
-                        if (avtobus.isSmerNaprej()) {
-                            avtobus.setTrenutnaPostaja(linija.getPostaje().get(linija.getPostaje().size() - 1));
-                            avtobus.setSmerNaprej(false);
+                        ekspresNajden = true;
+                    } else {
+                        busNajden = true;
+                    }
+                }
+            }
+            if (ekspresNajden) {
+                oznaka += " (ekspres)";
+            }
+            if (busNajden) {
+                oznaka += " (bus)";
+            }
+            postaja += oznaka;
+
+            sb.append(postaja);
+
+            if (i < listPostaj.size() - 1) {
+                sb.append(" -> ");
+            }
+        }
+        return sb.toString();
+    }
+}
+
+class Par {
+    Postaja postaja;
+    double razdalja;
+
+    public Par(Postaja postaja, double razdalja) {
+        this.postaja = postaja;
+        this.razdalja = razdalja;
+    }
+
+    public Postaja getPostaja() {
+        return postaja;
+    }
+
+    public void setPostaja(Postaja postaja) {
+        this.postaja = postaja;
+    }
+
+    public double getRazdalja() {
+        return razdalja;
+    }
+
+    public void setRazdalja(double razdalja) {
+        this.razdalja = razdalja;
+    }
+
+    public static class RazdaljaComparator implements Comparator<Par> {
+        public int compare(Par par1, Par par2) {
+            int vrednost = Double.compare(par1.razdalja, par2.razdalja);
+
+            if (vrednost != 0) {
+                return vrednost;
+            } else {
+                return par1.getPostaja().getIme().compareTo(par2.getPostaja().getIme());
+            }
+        }
+    }
+}
+
+public class DN09 {
+    static Postaja[] postaje;
+
+    static Avtobus[] avtobusi;
+    static int stAvtobusov = 0;
+
+    static Linija[] linije;
+    static int stLinij = 0;
+
+    static void preberiInUredi(String datoteka) throws Exception {
+        Scanner sc = new Scanner(new File(datoteka));
+
+        String[] parametri = sc.nextLine().split(",");
+        int stPostaj = Integer.parseInt(parametri[0]);
+        int stLinij = Integer.parseInt(parametri[1]);
+        int stAvtobusov = Integer.parseInt(parametri[2]);
+
+        postaje = new Postaja[stPostaj];
+        avtobusi = new Avtobus[stAvtobusov];
+        linije = new Linija[stLinij];
+
+        sc.nextLine();
+
+        String[] postajeT = new String[stPostaj];
+        String[] linijeT = new String[stLinij];
+
+        for (int i = 0; i < stPostaj; i++) {
+            postajeT[i] = sc.nextLine();
+        }
+
+        sc.nextLine();
+
+        for (int i = 0; i < stLinij; i++) {
+            linijeT[i] = sc.nextLine();
+        }
+        sc.close();
+
+        populatePostaje(postajeT);
+        populateLinije(linijeT);
+    }
+
+    static void populatePostaje(String[] p) {
+        for (int i = 0; i < p.length; i++) {
+            String[] postaja = p[i].split(",");
+
+            int id = Integer.parseInt(postaja[0]);
+            String ime = postaja[1];
+            int x = Integer.parseInt(postaja[2]);
+            int y = Integer.parseInt(postaja[3]);
+            int cakajoci = Integer.parseInt(postaja[6]);
+
+            postaje[i] = new Postaja(id, ime, x, y, cakajoci);
+
+            if (!postaja[5].isBlank()) {
+                String[] avtobusIdStPotnikov = postaja[5].split(";");
+
+                for (int j = 0; j < avtobusIdStPotnikov.length; j++) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(avtobusIdStPotnikov[j]);
+                    sb.replace(avtobusIdStPotnikov[j].indexOf("("), avtobusIdStPotnikov[j].indexOf("(") + 1, ",");
+                    sb.replace(avtobusIdStPotnikov[j].indexOf(")"), avtobusIdStPotnikov[j].indexOf(")") + 1, "");
+                    String[] avtobus = sb.toString().split(",");
+
+                    int idA = Integer.parseInt(avtobus[0]);
+                    int stPotnikov = Integer.parseInt(avtobus[1]);
+
+                    if (!obstajaAvtobus(idA)) {
+                        avtobusi[stAvtobusov] = new Avtobus(idA, stPotnikov);
+                        avtobusi[stAvtobusov].setTrenutnaPostaja(postaje[i]);
+                        stAvtobusov++;
+                    }
+                }
+            }
+
+            String[] idLinije = postaja[4].split(";");
+            for (String idL : idLinije) {
+                int idLint = Integer.parseInt(idL);
+                if (!obstajaLinija(idLint)) {
+                    linije[stLinij] = new Linija(idLint);
+                    stLinij++;
+                }
+            }
+        }
+    }
+
+    static void populateLinije(String[] lin) {
+        for (int i = 0; i < lin.length; i++) {
+            String[] linija = lin[i].split(",");
+            int id = 0;
+
+            for (int j = 0; j < stLinij; j++) {
+                if (linije[j].getID() == Integer.parseInt(linija[0])) {
+                    id = j;
+                }
+            }
+
+            String barva = linija[1];
+            String idAvtobusov = linija[2];
+            String idPostaj = linija[3];
+
+            linije[id].setBarva(barva);
+
+            String[] idAvtobusa = idAvtobusov.split(";");
+            for (String idA : idAvtobusa) {
+                for (int j = 0; j < stAvtobusov; j++) {
+                    if (Integer.parseInt(idA) == avtobusi[j].getID()) {
+                        linije[id].dodajAvtobus(avtobusi[j]);
+                    }
+                }
+            }
+
+            String[] idPostaje = idPostaj.split("\\|");
+            for (String idP : idPostaje) {
+                for (int j = 0; j < postaje.length; j++) {
+                    if (Integer.parseInt(idP) == postaje[j].getID()) {
+                        linije[id].dodajPostajo(postaje[j]);
+                    }
+                }
+            }
+
+        }
+    }
+
+    static boolean obstajaAvtobus(int id) {
+        for (int i = 0; i < stAvtobusov; i++) {
+            if (avtobusi[i].getID() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean obstajaLinija(int id) {
+        for (int i = 0; i < stLinij; i++) {
+            if (linije[i].getID() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static void izpisi() {
+        for (Linija string : linije) {
+            System.out.println(string);
+        }
+    }
+
+    static void izpisNajboljObremenjenePostaje(int kapaciteta) {
+        if (kapaciteta <= 0) {
+            System.out.println("Kapaciteta je manjsa ali enaka 0");
+            return;
+        }
+
+        Map<String, Object> najPostaja = new HashMap<>();
+
+        for (int i = 0; i < postaje.length; i++) {
+            double stCakajoci = postaje[i].getCakajoci();
+            double stProstihMest = 0;
+
+            for (int j = 0; j < linije.length; j++) {
+                if (linije[j].getPostaje().contains(postaje[i])) {
+                    List<Avtobus> avtobusi = linije[j].getAvtobusi();
+
+                    for (Avtobus avtobus : avtobusi) {
+                        stProstihMest += ((kapaciteta - avtobus.getSteviloPotnikov()) >= 0)
+                                ? kapaciteta - avtobus.getSteviloPotnikov()
+                                : 0;
+                    }
+                }
+            }
+
+            if (!najPostaja.containsKey("Razmerje")) {
+                najPostaja.put("Razmerje", stProstihMest);
+                najPostaja.put("idP", postaje[i].getID());
+                najPostaja.put("imePostaje", postaje[i].getIme());
+                najPostaja.put("stProstihMest", stProstihMest);
+                najPostaja.put("stCakajocih", stCakajoci);
+            }
+
+            double Razmerje = 0;
+
+            if (stCakajoci <= 0) {
+                Razmerje = stProstihMest;
+            } else {
+                Razmerje = stProstihMest / stCakajoci;
+            }
+
+            if ((double) najPostaja.get("Razmerje") > Razmerje) {
+                najPostaja.put("Razmerje", Razmerje);
+                najPostaja.put("idP", postaje[i].getID());
+                najPostaja.put("imePostaje", postaje[i].getIme());
+                najPostaja.put("stProstihMest", stProstihMest);
+                najPostaja.put("stCakajocih", stCakajoci);
+            } else if ((double) najPostaja.get("Razmerje") == Razmerje) {
+                if ((int) najPostaja.get("idP") > postaje[i].getID()) {
+                    najPostaja.put("idP", postaje[i].getID());
+                    najPostaja.put("imePostaje", postaje[i].getIme());
+                    najPostaja.put("stProstihMest", stProstihMest);
+                    najPostaja.put("stCakajocih", stCakajoci);
+                }
+            }
+        }
+
+        System.out.println(String.format(
+                "Najbolj obremenjena postaja: %d %s",
+                (int) najPostaja.get("idP"),
+                najPostaja.get("imePostaje")));
+
+        System.out.println(String.format(
+                "Cakajoci: %d, Stevilo prostih mest: %d, Razmerje: %.2f",
+                ((Number) najPostaja.get("stCakajocih")).intValue(),
+                ((Number) najPostaja.get("stProstihMest")).intValue(),
+                ((Number) najPostaja.get("Razmerje")).doubleValue()));
+
+    }
+
+    static void naslednjeStanje() {
+        for (int i = 0; i < linije.length; i++) {
+            Linija linija = linije[i];
+            List<Postaja> postaja = linija.getPostaje();
+            List<Avtobus> avtobusiNaLiniji = linija.getAvtobusi();
+
+            for (Avtobus avtobus : avtobusiNaLiniji) {
+                Postaja trenutnaPostaja = avtobus.getTrenutnaPostaja();
+                int trenutniIndeks = postaja.indexOf(trenutnaPostaja);
+
+                if (trenutniIndeks != -1 && !(avtobus instanceof EkspresniAvtobus)) {
+                    if (avtobus.isSmerNaprej()) {
+                        if (trenutniIndeks < postaja.size() - 1) {
+                            avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks + 1));
                         } else {
-                            avtobus.setTrenutnaPostaja(linija.getPostaje().get(0));
+                            avtobus.setSmerNaprej(false);
+                            if (postaja.size() > 1) {
+                                avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks - 1));
+                            }
+                        }
+                    } else {
+                        if (trenutniIndeks > 0) {
+                            avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks - 1));
+                        } else {
                             avtobus.setSmerNaprej(true);
-                        }
-                    }
-                }
-            }
-        }
-
-        static void izpisiPoNPremikihEkspres(int n) {
-            System.out.println("Zacetno stanje");
-            izpisi();
-            System.out.println();
-
-            for (int i = 0; i < n; i++) {
-                naslednjeStanjeEkspres();
-                naslednjeStanje();
-            }
-
-            System.out.println("Stanje po " + n + " premikih");
-            izpisi();
-        }
-
-        static void casiPrihodov(int IDpostaje, int maxRazdalja) {
-            Postaja postaja = postaje[IDpostaje - 1];
-            System.out.println("Postaja " + postaja.getIme() + ":");
-
-            for (Linija linija : linije) {
-                int indexPostaje = linija.getPostaje().indexOf(postaja);
-                if (indexPostaje != -1) {
-                    for (Avtobus avtobus : linija.getAvtobusi()) {
-                        int indexAvtobusa = linija.getPostaje().indexOf(avtobus.getTrenutnaPostaja());
-                        int Razdalja = Math.abs(indexAvtobusa - indexPostaje);
-
-                        if (maxRazdalja >= Razdalja) {
-                            System.out.println(
-                                    "Linija " + linija.getID() + " Avtobus " + avtobus.getID() + " -  " + Razdalja);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Uporabljam BFS ~ Breadth-first, ker Dijkstra algoritem mi ni uspelo
-        // implementirati
-        static void steviloPrestopov(int zacetekID, int konecID) {
-            Postaja zacetekPostaja = null, koncnPostaja = null;
-
-            for (Postaja postaja : postaje) {
-                if (postaja.getID() == zacetekID) {
-                    zacetekPostaja = postaja;
-                }
-                if (postaja.getID() == konecID) {
-                    koncnPostaja = postaja;
-                }
-            }
-
-            for (Linija linija : linije) {
-                if (linija.getPostaje().contains(koncnPostaja) && linija.getPostaje().contains(zacetekPostaja)) {
-                    System.out.println(
-                            "Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme() + " prestop ni potreben");
-                    return;
-                }
-            }
-
-            Queue<PostajaInfo> queue = new LinkedList<>();
-            Map<Postaja, Integer> minPrestopi = new HashMap<>();
-
-            queue.add(new PostajaInfo(zacetekPostaja, 0));
-            minPrestopi.put(zacetekPostaja, 0);
-
-            while (!queue.isEmpty()) {
-                PostajaInfo trenutnaInfo = queue.poll();
-                Postaja trenutnaPostaja = trenutnaInfo.postaja;
-                int prestopi = trenutnaInfo.prestopi;
-
-                if (trenutnaPostaja == koncnPostaja) {
-                    System.out.println("Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme()
-                            + " je potrebno prestopiti " + (prestopi - 1) + "-krat");
-                    return;
-                }
-
-                for (Linija linija : linije) {
-                    if (linija.getPostaje().contains(trenutnaPostaja)) {
-                        for (Postaja sosednjaPostaja : linija.getPostaje()) {
-                            int noviPrestopi = prestopi + 1;
-                            if (!minPrestopi.containsKey(sosednjaPostaja)
-                                    || noviPrestopi < minPrestopi.get(sosednjaPostaja)) {
-                                minPrestopi.put(sosednjaPostaja, noviPrestopi);
-                                queue.add(new PostajaInfo(sosednjaPostaja, noviPrestopi));
+                            if (postaja.size() > 1) {
+                                avtobus.setTrenutnaPostaja(postaja.get(trenutniIndeks + 1));
                             }
                         }
                     }
                 }
             }
+        }
+    }
 
-            System.out.println("Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme() + " pot ni mozna");
+    static void izpisiPoNPremikih(int n) {
+        System.out.println("Zacetno stanje");
+        izpisi();
+        System.out.println();
 
+        for (int i = 0; i < n; i++) {
+            naslednjeStanje();
         }
 
-        static class PostajaInfo {
-            Postaja postaja;
-            int prestopi;
+        System.out.println("Stanje po " + n + " premikih");
+        izpisi();
+    }
 
-            public PostajaInfo(Postaja postaja, int prestopi) {
-                this.postaja = postaja;
-                this.prestopi = prestopi;
+    static void dodajEkspresneAvtobuse() {
+        Random rnd = new Random();
+
+        for (Linija linija : linije) {
+            Postaja[] preskociPostajo = new Postaja[Math.max(0, linija.getPostaje().size() - 2)];
+            for (int i = 1; i < linija.getPostaje().size() - 1; i++) {
+                preskociPostajo[i - 1] = linija.getPostaje().get(i);
+            }
+
+            EkspresniAvtobus novAvtobusExpr = new EkspresniAvtobus(rnd.nextInt(), rnd.nextInt(), preskociPostajo, true);
+            novAvtobusExpr.setTrenutnaPostaja(linija.getPostaje().get(0));
+            linija.dodajAvtobus(novAvtobusExpr);
+        }
+    }
+
+    static void naslednjeStanjeEkspres() {
+        for (int i = 0; i < linije.length; i++) {
+            Linija linija = linije[i];
+            List<Avtobus> avtobusiNaLiniji = linija.getAvtobusi();
+
+            for (Avtobus avtobus : avtobusiNaLiniji) {
+                if (avtobus instanceof EkspresniAvtobus) {
+                    if (avtobus.isSmerNaprej()) {
+                        avtobus.setTrenutnaPostaja(linija.getPostaje().get(linija.getPostaje().size() - 1));
+                        avtobus.setSmerNaprej(false);
+                    } else {
+                        avtobus.setTrenutnaPostaja(linija.getPostaje().get(0));
+                        avtobus.setSmerNaprej(true);
+                    }
+                }
+            }
+        }
+    }
+
+    static void izpisiPoNPremikihEkspres(int n) {
+        System.out.println("Zacetno stanje");
+        izpisi();
+        System.out.println();
+
+        for (int i = 0; i < n; i++) {
+            naslednjeStanjeEkspres();
+            naslednjeStanje();
+        }
+
+        System.out.println("Stanje po " + n + " premikih");
+        izpisi();
+    }
+
+    static void casiPrihodov(int IDpostaje, int maxRazdalja) {
+        Postaja postaja = postaje[IDpostaje - 1];
+        System.out.println("Postaja " + postaja.getIme() + ":");
+
+        for (Linija linija : linije) {
+            int indexPostaje = linija.getPostaje().indexOf(postaja);
+            if (indexPostaje != -1) {
+                for (Avtobus avtobus : linija.getAvtobusi()) {
+                    int indexAvtobusa = linija.getPostaje().indexOf(avtobus.getTrenutnaPostaja());
+                    int Razdalja = Math.abs(indexAvtobusa - indexPostaje);
+
+                    if (maxRazdalja >= Razdalja) {
+                        System.out.println(
+                                "Linija " + linija.getID() + " Avtobus " + avtobus.getID() + " -  " + Razdalja);
+                    }
+                }
+            }
+        }
+    }
+
+    // Uporabljam BFS ~ Breadth-first, ker Djikstra algoritem mi ni uspelo in druagce nisem vedel kako
+    static void steviloPrestopov(int zacetekID, int konecID) {
+        Postaja zacetekPostaja = null, koncnPostaja = null;
+
+        for (Postaja postaja : postaje) {
+            if (postaja.getID() == zacetekID) {
+                zacetekPostaja = postaja;
+            }
+            if (postaja.getID() == konecID) {
+                koncnPostaja = postaja;
             }
         }
 
-        static boolean[] postajaObstaja(String Indentifierpostaja) {
-            boolean postajaObstaja[] = { false, false };
-
-            try {
-                int idPostaje = Integer.parseInt(Indentifierpostaja.trim());
-                for (Postaja postaja : postaje) {
-                    if (postaja.getID() == idPostaje) {
-                        postajaObstaja[0] = true;
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-                postajaObstaja[1] = true;
-                for (Postaja postaja : postaje) {
-                    if (postaja.getIme().equals(Indentifierpostaja.trim())) {
-                        postajaObstaja[0] = true;
-                        break;
-                    }
-                }
+        for (Linija linija : linije) {
+            if (linija.getPostaje().contains(koncnPostaja) && linija.getPostaje().contains(zacetekPostaja)) {
+                System.out.println(
+                        "Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme() + " prestop ni potreben");
+                return;
             }
-            return postajaObstaja;
         }
 
-        static void izpisNajblizjePostaje(String imePostaje) {
-            boolean[] obstajaPostaja = postajaObstaja(imePostaje);
+        Queue<Object[]> queue = new LinkedList<>();
+        Map<Postaja, Integer> minPrestopi = new HashMap<>();
 
-            if (!obstajaPostaja[0]) {
-                if(obstajaPostaja[1]){
-                    System.out.println("Postaja z imenom " + imePostaje + "ne obstaja.");
-                }else{
-                    System.out.println("Postaja z ID " + imePostaje + "ne obstaja.");
-                }
+        queue.add(new Object[] { zacetekPostaja, 0, new ArrayList<Linija>() });
+        minPrestopi.put(zacetekPostaja, 0);
+
+        while (!queue.isEmpty()) {
+            Object[] trenutniPodatki = queue.poll();
+            Postaja trenutnaPostaja = (Postaja) trenutniPodatki[0];
+            int prestopi = (int) trenutniPodatki[1];
+            List<Linija> trenutneLinije = (List<Linija>) trenutniPodatki[2];
+
+            if (trenutnaPostaja == koncnPostaja) {
+                System.out.println("Za pot " + zacetekPostaja.getIme() + " -> " + koncnPostaja.getIme() + " je potrebno prestopiti " + (prestopi - 1) + "-krat");
                 return;
             }
 
-            Postaja zacetnPostaja = null;
-            if (obstajaPostaja[1]) {
-                for (Postaja postaja : postaje) {
-                    if (postaja.getIme().equals(imePostaje.trim())) {
-                        zacetnPostaja = postaja;
-                    }
-                }
-            } else {
-                for (Postaja postaja : postaje) {
-                    if (postaja.getID() == Integer.parseInt(imePostaje.trim())) {
-                        zacetnPostaja = postaja;
+            for (Linija linija : linije) {
+                if (linija.getPostaje().contains(trenutnaPostaja)) {
+                    for (Postaja sosednjaPostaja : linija.getPostaje()) {
+                        int noviPrestopi = prestopi;
+                        List<Linija> Linije = new ArrayList<>(trenutneLinije);
+                        if (!Linije.contains(linija)) {
+                            Linije.add(linija);
+                            noviPrestopi++;
+                        }
+                        if (!minPrestopi.containsKey(sosednjaPostaja) || noviPrestopi < minPrestopi.get(sosednjaPostaja)) {
+                            minPrestopi.put(sosednjaPostaja, noviPrestopi);
+                            queue.add(new Object[] { sosednjaPostaja, noviPrestopi, trenutneLinije });
+                        }
                     }
                 }
             }
+        }
+    }
 
-            double x1 = zacetnPostaja.getX(), y1 = zacetnPostaja.getY();
-            double minRazdalja = -1;
-            Postaja minPostaja = null;
+    static boolean[] postajaObstaja(String Indentifierpostaja) {
+        boolean postajaObstaja[] = { false, false };
+
+        try {
+            int idPostaje = Integer.parseInt(Indentifierpostaja.trim());
             for (Postaja postaja : postaje) {
-                if (postaja != zacetnPostaja) {
-                    double x2 = postaja.getX(), y2 = postaja.getY();
-                    double razdalja = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-                    if (minRazdalja == -1) {
+                if (postaja.getID() == idPostaje) {
+                    postajaObstaja[0] = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            postajaObstaja[1] = true;
+            for (Postaja postaja : postaje) {
+                if (postaja.getIme().equals(Indentifierpostaja.trim())) {
+                    postajaObstaja[0] = true;
+                    break;
+                }
+            }
+        }
+        return postajaObstaja;
+    }
+
+    static void izpisNajblizjePostaje(String imePostaje) {
+        boolean[] obstajaPostaja = postajaObstaja(imePostaje);
+
+        if (!obstajaPostaja[0]) {
+            if (obstajaPostaja[1]) {
+                System.out.println("Postaja z imenom " + imePostaje + "ne obstaja.");
+            } else {
+                System.out.println("Postaja z ID " + imePostaje + "ne obstaja.");
+            }
+            return;
+        }
+
+        Postaja zacetnPostaja = null;
+        if (obstajaPostaja[1]) {
+            for (Postaja postaja : postaje) {
+                if (postaja.getIme().equals(imePostaje.trim())) {
+                    zacetnPostaja = postaja;
+                }
+            }
+        } else {
+            for (Postaja postaja : postaje) {
+                if (postaja.getID() == Integer.parseInt(imePostaje.trim())) {
+                    zacetnPostaja = postaja;
+                }
+            }
+        }
+
+        double x1 = zacetnPostaja.getX(), y1 = zacetnPostaja.getY();
+        double minRazdalja = -1;
+        Postaja minPostaja = null;
+        for (Postaja postaja : postaje) {
+            if (postaja != zacetnPostaja) {
+                double x2 = postaja.getX(), y2 = postaja.getY();
+                double razdalja = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                if (minRazdalja == -1) {
+                    minRazdalja = razdalja;
+                    minPostaja = postaja;
+                }
+                if (razdalja < minRazdalja) {
+                    if (razdalja == minRazdalja && postaja.getIme().compareTo(minPostaja.getIme()) < 0) {
+                        minRazdalja = razdalja;
+                        minPostaja = postaja;
+                    } else {
                         minRazdalja = razdalja;
                         minPostaja = postaja;
                     }
-                    if (razdalja < minRazdalja) {
-                        if (razdalja == minRazdalja && postaja.getIme().compareTo(minPostaja.getIme()) < 0) {
-                            minRazdalja = razdalja;
-                            minPostaja = postaja;
-                        } else {
-                            minRazdalja = razdalja;
-                            minPostaja = postaja;
-                        }
-                    }
                 }
             }
-
-            System.out
-                    .println(String.format("Najblizja postaja %s (ID %d):\n%d. %s - razdalja: %.2f",
-                    zacetnPostaja.getIme(), zacetnPostaja.getID(), minPostaja.getID(), minPostaja.getIme(), minRazdalja));
         }
 
-        public static void main(String[] args) throws Exception {
-            preberiInUredi(args[0]);
+        System.out.println(String.format("Najblizja postaja %s (ID %d):\n%d. %s - razdalja: %.2f",
+                zacetnPostaja.getIme(), zacetnPostaja.getID(), minPostaja.getID(), minPostaja.getIme(), minRazdalja));
+    }
 
-            if (args[1].equals("izpisi")) {
-                izpisi();
+    static void izpisNajblizjihPostaj(String imePostaje, int k) {
+        boolean[] obstajaPostaja = postajaObstaja(imePostaje);
+
+        if (!obstajaPostaja[0]) {
+            if (obstajaPostaja[1]) {
+                System.out.println("Postaja z imenom " + imePostaje + "ne obstaja.");
+            } else {
+                System.out.println("Postaja z ID " + imePostaje + "ne obstaja.");
             }
-            if (args[1].equals("najboljObremenjena")) {
-                izpisNajboljObremenjenePostaje(Integer.parseInt(args[2]));
-            }
-            if (args[1].equals("premik")) {
-                izpisiPoNPremikih(Integer.parseInt(args[2]));
-            }
-            if (args[1].equals("ekspres")) {
-                dodajEkspresneAvtobuse();
-                izpisiPoNPremikihEkspres(Integer.parseInt(args[2]));
-            }
-            if (args[1].equals("prihodi")) {
-                casiPrihodov(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-            }
-            if (args[1].equals("stPrestopov")) {
-                steviloPrestopov(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-            }
-            if (args[1].equals("najblizja")) {
-                String imePostaje = "";
-                for (int i = 2; i < args.length; i++) {
-                    imePostaje += args[i] + " ";
+            return;
+        }
+
+        Postaja zacetnPostaja = null;
+        if (obstajaPostaja[1]) {
+            for (Postaja postaja : postaje) {
+                if (postaja.getIme().equals(imePostaje.trim())) {
+                    zacetnPostaja = postaja;
                 }
-                izpisNajblizjePostaje(imePostaje);
+            }
+        } else {
+            for (Postaja postaja : postaje) {
+                if (postaja.getID() == Integer.parseInt(imePostaje.trim())) {
+                    zacetnPostaja = postaja;
+                }
+            }
+        }
 
+        double x1 = zacetnPostaja.getX(), y1 = zacetnPostaja.getY();
+        List<Par> list = new ArrayList<>();
+
+        for (Postaja postaja : postaje) {
+            if (postaja != zacetnPostaja) {
+                double x2 = postaja.getX(), y2 = postaja.getY();
+                double razdalja = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                list.add(new Par(postaja, razdalja));
+            }
+        }
+
+        Collections.sort(list, new Par.RazdaljaComparator());
+
+        if (k > list.size()) {
+            System.out.println(String.format("Najblizje postaje %s (ID %d):",
+                    zacetnPostaja.getIme(), zacetnPostaja.getID()));
+            for (int i = 0; i < list.size(); i++) {
+                System.out.println(String.format((i + 1) + ". %s - razdalja: %.2f",
+                        list.get(i).getPostaja().getIme(), list.get(i).getRazdalja()));
+            }
+        } else {
+            System.out.println(String.format("Najblizje postaje %s (ID %d):",
+                    zacetnPostaja.getIme(), zacetnPostaja.getID()));
+            for (int i = 0; i < k; i++) {
+                System.out.println(String.format((i + 1) + ". %s - razdalja: %.2f",
+                        list.get(i).getPostaja().getIme(), list.get(i).getRazdalja()));
             }
         }
     }
+
+    public static void main(String[] args) throws Exception {
+        preberiInUredi(args[0]);
+
+        if (args[1].equals("izpisi")) {
+            izpisi();
+        }
+        if (args[1].equals("najboljObremenjena")) {
+            izpisNajboljObremenjenePostaje(Integer.parseInt(args[2]));
+        }
+        if (args[1].equals("premik")) {
+            izpisiPoNPremikih(Integer.parseInt(args[2]));
+        }
+        if (args[1].equals("ekspres")) {
+            dodajEkspresneAvtobuse();
+            izpisiPoNPremikihEkspres(Integer.parseInt(args[2]));
+        }
+        if (args[1].equals("prihodi")) {
+            casiPrihodov(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+        }
+        if (args[1].equals("stPrestopov")) {
+            steviloPrestopov(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+        }
+        if (args[1].equals("najblizja")) {
+            String imePostaje = "";
+            boolean dvaArgs = false;
+            int k = 0;
+            for (int i = 2; i < args.length; i++) {
+                if (i > 2) {
+                    try {
+                        k = Integer.parseInt(args[i]);
+                        dvaArgs = true;
+                        break;
+                    } catch (Exception e) {
+                    }
+                }
+                imePostaje += args[i] + " ";
+            }
+
+            if (dvaArgs) {
+                izpisNajblizjihPostaj(imePostaje, k);
+            } else {
+                izpisNajblizjePostaje(imePostaje);
+            }
+        }
+        if (args[1].equals("izrisi")) {
+            StdDraw.setCanvasSize(400, 400);
+            StdDraw.setScale(0, 100);
+
+            StdDraw.setPenColor(Color.WHITE);
+            StdDraw.filledSquare(50, 50, 100);
+
+            for (Linija linija : linije) {
+                StdDraw.setPenColor(Color.decode(linija.getBarva()));
+                StdDraw.setPenRadius(0.015);
+                for (int i = 0; i < linija.getPostaje().size() - 1; i++) {
+                    Postaja postaja1 = linija.getPostaje().get(i);
+                    Postaja postaja2 = linija.getPostaje().get(i + 1);
+                    StdDraw.line(postaja1.getX(), postaja1.getY(), postaja2.getX(), postaja2.getY());
+
+                }
+            }
+
+            for (Postaja postaja : postaje) {
+                int x = postaja.getX();
+                int y = postaja.getY();
+
+                StdDraw.setPenColor(Color.BLACK);
+                StdDraw.filledSquare(x, y, 1.5);
+
+                StdDraw.setPenColor(Color.darkGray);
+                StdDraw.text(x, y - 3, postaja.getIme());
+            }
+
+            StdDraw.show();
+            StdDraw.save(args[2]);
+        }
+
+    }
+}
